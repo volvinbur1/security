@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/volvinbur1/security/internal/casinoroyale/rng"
-	"github.com/volvinbur1/security/internal/casinoroyale/rng/lcg"
+	"github.com/volvinbur1/security/internal/rng"
+	"github.com/volvinbur1/security/internal/rng/lcg"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -36,7 +36,7 @@ type PlayResult struct {
 	RealNumber int
 }
 
-func NewAccount() Account {
+func NewAccount() *Account {
 	account := Account{}
 
 	rand.Seed(time.Now().UnixNano())
@@ -62,7 +62,7 @@ func NewAccount() Account {
 		break
 	}
 
-	return account
+	return &account
 }
 
 func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
