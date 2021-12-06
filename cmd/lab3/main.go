@@ -40,7 +40,7 @@ func crackLcg(account *casinoroyale.Account) (rng.Lcg, error) {
 			return rng.Lcg{}, err
 		}
 
-		recentNumbers[i] = result.RealNumber
+		recentNumbers[i] = int(result.RealNumber)
 	}
 
 	return lcg.CrackRng(recentNumbers)

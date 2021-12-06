@@ -33,7 +33,7 @@ type Account struct {
 type PlayResult struct {
 	BetWon     bool
 	Message    string
-	RealNumber int
+	RealNumber int32
 }
 
 func NewAccount() *Account {
@@ -71,7 +71,7 @@ func (a *Account) SetLcgParameters(lcgParams rng.Lcg) {
 }
 
 func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
-	betNumber := 1
+	betNumber := int32(1)
 	if a.isLcgCracked {
 		betNumber = lcg.NextValue(a.lcgParameters)
 	}
@@ -89,6 +89,7 @@ func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 
 	a.lcgParameters.LastNumber = result.RealNumber
 	if result.RealNumber == betNumber {
+		result.BetWon = true
 		a.Money += betAmount
 	} else {
 		a.Money -= betAmount
@@ -116,7 +117,7 @@ func parsePlayResponse(body []byte) (PlayResult, error) {
 
 	return PlayResult{
 		Message:    msg,
-		RealNumber: int(realNumber),
+		RealNumber: int32(realNumber),
 	}, nil
 }
 

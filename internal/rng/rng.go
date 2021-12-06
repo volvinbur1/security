@@ -1,7 +1,7 @@
 package rng
 
 type Lcg struct {
-	A          int
-	C          int
-	LastNumber int
+	A          int32
+	C          int32
+	LastNumber int32
 }
