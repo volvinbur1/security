@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/volvinbur1/security/internal/casinoroyale"
-	"github.com/volvinbur1/security/internal/rng"
-	"github.com/volvinbur1/security/internal/rng/lcg"
+	"github.com/volvinbur1/security/internal/lab3/casinoroyale"
+	"github.com/volvinbur1/security/internal/lab3/rng"
+	"github.com/volvinbur1/security/internal/lab3/rng/lcg"
 )
 
 func main() {

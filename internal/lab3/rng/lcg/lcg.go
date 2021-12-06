@@ -2,7 +2,7 @@ package lcg
 
 import (
 	"fmt"
-	"github.com/volvinbur1/security/internal/rng"
+	"github.com/volvinbur1/security/internal/lab3/rng"
 	"math"
 	"math/big"
 )
