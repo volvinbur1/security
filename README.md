@@ -4,7 +4,7 @@
 0. coming soon
 1. coming soon
 2. coming soon
-3. :heavy_check_mark: [Casino Royale](https://github.com/volvinbur1/security/tree/main/cmd/lab3)
+3. :heavy_check_mark: [Casino Royal](https://github.com/volvinbur1/security/tree/main/cmd/lab3)
 4. coming soon
 5. coming soon
 6. coming soon
