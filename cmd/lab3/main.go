@@ -73,26 +73,22 @@ func getWorkingMode() WorkMode {
 
 func createCasinoAccount(mode WorkMode) (*casinoroyale.Account, error) {
 	account := casinoroyale.NewAccount()
-	err := crackLcg(account)
-	if err != nil {
-		return nil, err
-	}
 
 	switch mode {
 	case lcgPlay:
-		err = crackLcg(account)
+		err := crackLcg(account)
 		if err != nil {
 			return nil, err
 		}
 		break
 	case mtPlay:
-		err = crackMt(account)
+		err := crackMt(account)
 		if err != nil {
 			return nil, err
 		}
 		break
 	case betterMtPlay:
-		err = crackBetterMt(account)
+		err := crackBetterMt(account)
 		if err != nil {
 			return nil, err
 		}
