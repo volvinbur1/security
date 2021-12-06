@@ -1,5 +1,5 @@
 # :blush: :arrow_right: Security :arrow_right: :dizzy_face:
-~~🙏🏻 Боже, допоможи~~
+~~:pray: Боже, допоможи~~
 
 0. coming soon
 1. coming soon
