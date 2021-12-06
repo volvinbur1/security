@@ -1,4 +1,4 @@
-# 🤗➡️ Security ➡️😵
+# :blush: :arrow_right: Security :arrow_right: :dizzy_face:
 ~~🙏🏻 Боже, допоможи~~
 
 0. coming soon
