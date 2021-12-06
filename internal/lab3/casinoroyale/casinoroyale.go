@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/seehuhn/mt19937"
 	"github.com/volvinbur1/security/internal/lab3/rng"
 	"github.com/volvinbur1/security/internal/lab3/rng/lcg"
 	"io/ioutil"
@@ -16,10 +17,10 @@ const baseUrl = "http://95.217.177.249/casino"
 
 // endpoints
 const (
-	createAcc = "createacc"
-	playLcg   = "playLcg"
-	//playMt       = "playMt"
-	//playBetterMt = "playBetterMt"
+	createAcc    = "createacc"
+	playLcg      = "playLcg"
+	playMt       = "playMt"
+	playBetterMt = "playBetterMt"
 )
 
 type Account struct {
@@ -28,6 +29,8 @@ type Account struct {
 
 	isLcgCracked  bool
 	lcgParameters rng.Lcg
+
+	mtRandom *rand.Rand
 }
 
 type PlayResult struct {
@@ -70,6 +73,11 @@ func (a *Account) SetLcgParameters(lcgParams rng.Lcg) {
 	a.lcgParameters = lcgParams
 }
 
+func (a *Account) SeedMtRandom(seedValue int64) {
+	a.mtRandom = rand.New(mt19937.New())
+	a.mtRandom.Seed(seedValue)
+}
+
 func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 	betNumber := int32(1)
 	if a.isLcgCracked {
@@ -88,6 +96,60 @@ func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 	}
 
 	a.lcgParameters.LastNumber = result.RealNumber
+	if result.RealNumber == betNumber {
+		result.BetWon = true
+		a.Money += betAmount
+	} else {
+		a.Money -= betAmount
+	}
+
+	return result, nil
+}
+
+func (a *Account) PlayMt(betAmount int) (PlayResult, error) {
+	betNumber := int32(1)
+	if a.mtRandom != nil {
+		betNumber = a.mtRandom.Int31()
+	}
+
+	body, err := requestToCasino(fmt.Sprintf("%s/%s?id=%s&bet=%d&number=%d",
+		baseUrl, playMt, a.Id, betAmount, betNumber))
+	if err != nil {
+		return PlayResult{}, err
+	}
+
+	result, err := parsePlayResponse(body)
+	if err != nil {
+		return PlayResult{}, err
+	}
+
+	if result.RealNumber == betNumber {
+		result.BetWon = true
+		a.Money += betAmount
+	} else {
+		a.Money -= betAmount
+	}
+
+	return result, nil
+}
+
+func (a *Account) PlayBetterMt(betAmount int) (PlayResult, error) {
+	betNumber := int32(1)
+	if a.mtRandom != nil {
+		betNumber = a.mtRandom.Int31()
+	}
+
+	body, err := requestToCasino(fmt.Sprintf("%s/%s?id=%s&bet=%d&number=%d",
+		baseUrl, playBetterMt, a.Id, betAmount, betNumber))
+	if err != nil {
+		return PlayResult{}, err
+	}
+
+	result, err := parsePlayResponse(body)
+	if err != nil {
+		return PlayResult{}, err
+	}
+
 	if result.RealNumber == betNumber {
 		result.BetWon = true
 		a.Money += betAmount
