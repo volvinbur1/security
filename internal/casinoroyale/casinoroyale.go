@@ -65,6 +65,11 @@ func NewAccount() *Account {
 	return &account
 }
 
+func (a *Account) SetLcgParameters(lcgParams rng.Lcg) {
+	a.isLcgCracked = true
+	a.lcgParameters = lcgParams
+}
+
 func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 	betNumber := 1
 	if a.isLcgCracked {
@@ -82,6 +87,7 @@ func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 		return PlayResult{}, err
 	}
 
+	a.lcgParameters.LastNumber = result.RealNumber
 	if result.RealNumber == betNumber {
 		a.Money += betAmount
 	} else {
