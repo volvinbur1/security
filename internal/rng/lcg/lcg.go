@@ -2,22 +2,11 @@ package lcg
 
 import (
 	"fmt"
-	"github.com/volvinbur1/security/internal/casinoroyale"
 	"github.com/volvinbur1/security/internal/rng"
 	"math"
 )
 
-func CrackRng(account *casinoroyale.Account) (rng.Lcg, error) {
-	var recentNumbers []int
-	for i := 0; i < 3; i++ {
-		result, err := account.PlayLcg(1)
-		if err != nil {
-			return rng.Lcg{}, err
-		}
-
-		recentNumbers = append(recentNumbers, result.RealNumber)
-	}
-
+func CrackRng(recentNumbers [3]int) (rng.Lcg, error) {
 	m := int(math.Pow(2, 32))
 	a := ((recentNumbers[2] - recentNumbers[1]) * ((recentNumbers[1] - recentNumbers[0]) % m)) % m
 	c := (recentNumbers[1] - recentNumbers[0]*a) % m
