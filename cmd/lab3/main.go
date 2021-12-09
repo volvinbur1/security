@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/volvinbur1/security/internal/lab3/casinoroyale"
-	"github.com/volvinbur1/security/internal/lab3/rng/lcg"
-	"github.com/volvinbur1/security/internal/lab3/rng/mt"
+	"github.com/volvinbur1/security/internal/lab3/rng/crack/lcg"
+	"github.com/volvinbur1/security/internal/lab3/rng/crack/mt"
 	"os"
 	"time"
 )
@@ -35,7 +35,7 @@ func main() {
 			result, err = account.PlayMt(account.Money)
 			break
 		case betterMtPlay:
-			result, err = account.PlayBetterMt(account.Money)
+			//result, err = account.PlayBetterMt(account.Money)
 			break
 		}
 
@@ -88,10 +88,10 @@ func createCasinoAccount(mode WorkMode) (*casinoroyale.Account, error) {
 		}
 		break
 	case betterMtPlay:
-		err := crackBetterMt(account)
-		if err != nil {
-			return nil, err
-		}
+		//err := crackBetterMt(account)
+		//if err != nil {
+		//	return nil, err
+		//}
 		break
 	}
 
@@ -125,27 +125,15 @@ func crackMt(account *casinoroyale.Account) error {
 		return err
 	}
 
-	seedValue := mt.CrackRng(result.RealNumber, startTime)
-	if seedValue == -1 {
-		return errors.New("seed value not found for mt algorithm")
+	seedValue := mt.CrackRng(uint32(result.RealNumber), startTime)
+	if seedValue == 0 {
+		return errors.New("seed value not found for mt19937 algorithm")
 	}
 
 	account.SeedMtRandom(seedValue)
 	return nil
 }
 
-func crackBetterMt(account *casinoroyale.Account) error {
-	startTime := time.Now()
-	result, err := account.PlayMt(1)
-	if err != nil {
-		return err
-	}
-
-	seedValue := mt.CrackRng(result.RealNumber, startTime)
-	if seedValue == -1 {
-		return errors.New("seed value not found for mt algorithm")
-	}
-
-	account.SeedMtRandom(seedValue)
-	return nil
-}
+//func crackBetterMt(account *casinoroyale.Account) error {
+//	return nil
+//}

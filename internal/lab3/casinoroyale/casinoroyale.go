@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/seehuhn/mt19937"
 	"github.com/volvinbur1/security/internal/lab3/rng"
-	"github.com/volvinbur1/security/internal/lab3/rng/lcg"
+	"github.com/volvinbur1/security/internal/lab3/rng/crack/lcg"
+	"github.com/volvinbur1/security/internal/lab3/rng/mt19937"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -17,10 +17,10 @@ const baseUrl = "http://95.217.177.249/casino"
 
 // endpoints
 const (
-	createAcc    = "createacc"
-	playLcg      = "playLcg"
-	playMt       = "playMt"
-	playBetterMt = "playBetterMt"
+	createAcc = "createacc"
+	playLcg   = "playLcg"
+	playMt    = "playMt"
+	//playBetterMt = "playBetterMt"
 )
 
 type Account struct {
@@ -30,13 +30,14 @@ type Account struct {
 	isLcgCracked  bool
 	lcgParameters rng.Lcg
 
-	mtRandom *rand.Rand
+	isMtCracked bool
+	mtRandom    mt19937.Generator
 }
 
 type PlayResult struct {
 	BetWon     bool
 	Message    string
-	RealNumber int32
+	RealNumber int
 }
 
 func NewAccount() *Account {
@@ -73,9 +74,10 @@ func (a *Account) SetLcgParameters(lcgParams rng.Lcg) {
 	a.lcgParameters = lcgParams
 }
 
-func (a *Account) SeedMtRandom(seedValue int64) {
-	a.mtRandom = rand.New(mt19937.New())
-	a.mtRandom.Seed(seedValue)
+func (a *Account) SeedMtRandom(seedValue uint32) {
+	a.isMtCracked = true
+	a.mtRandom = mt19937.New(seedValue)
+	a.mtRandom.UInt32()
 }
 
 func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
@@ -95,8 +97,8 @@ func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 		return PlayResult{}, err
 	}
 
-	a.lcgParameters.LastNumber = result.RealNumber
-	if result.RealNumber == betNumber {
+	a.lcgParameters.LastNumber = int32(result.RealNumber)
+	if int32(result.RealNumber) == betNumber {
 		result.BetWon = true
 		a.Money += betAmount
 	} else {
@@ -107,9 +109,9 @@ func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 }
 
 func (a *Account) PlayMt(betAmount int) (PlayResult, error) {
-	betNumber := int32(1)
-	if a.mtRandom != nil {
-		betNumber = a.mtRandom.Int31()
+	betNumber := uint32(1)
+	if a.isMtCracked {
+		betNumber = a.mtRandom.UInt32()
 	}
 
 	body, err := requestToCasino(fmt.Sprintf("%s/%s?id=%s&bet=%d&number=%d",
@@ -123,7 +125,7 @@ func (a *Account) PlayMt(betAmount int) (PlayResult, error) {
 		return PlayResult{}, err
 	}
 
-	if result.RealNumber == betNumber {
+	if uint32(result.RealNumber) == betNumber {
 		result.BetWon = true
 		a.Money += betAmount
 	} else {
@@ -133,32 +135,8 @@ func (a *Account) PlayMt(betAmount int) (PlayResult, error) {
 	return result, nil
 }
 
-func (a *Account) PlayBetterMt(betAmount int) (PlayResult, error) {
-	betNumber := int32(1)
-	if a.mtRandom != nil {
-		betNumber = a.mtRandom.Int31()
-	}
-
-	body, err := requestToCasino(fmt.Sprintf("%s/%s?id=%s&bet=%d&number=%d",
-		baseUrl, playBetterMt, a.Id, betAmount, betNumber))
-	if err != nil {
-		return PlayResult{}, err
-	}
-
-	result, err := parsePlayResponse(body)
-	if err != nil {
-		return PlayResult{}, err
-	}
-
-	if result.RealNumber == betNumber {
-		result.BetWon = true
-		a.Money += betAmount
-	} else {
-		a.Money -= betAmount
-	}
-
-	return result, nil
-}
+//func (a *Account) PlayBetterMt(betAmount int) (PlayResult, error) {
+//}
 
 func parsePlayResponse(body []byte) (PlayResult, error) {
 	var data map[string]interface{}
@@ -179,7 +157,7 @@ func parsePlayResponse(body []byte) (PlayResult, error) {
 
 	return PlayResult{
 		Message:    msg,
-		RealNumber: int32(realNumber),
+		RealNumber: int(realNumber),
 	}, nil
 }
 
@@ -203,6 +181,8 @@ func requestToCasino(requestUrl string) ([]byte, error) {
 
 		return body, errors.New(fmt.Sprint(resp.Status, ". ", casinoErr.error))
 	}
+
+	//fmt.Println(string(body))
 
 	return body, nil
 }
