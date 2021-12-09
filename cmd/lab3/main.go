@@ -33,7 +33,7 @@ func main() {
 			result, err = account.PlayMt(account.Money)
 			break
 		case betterMtPlay:
-			//result, err = account.PlayBetterMt(account.Money)
+			result, err = account.PlayMtBetter(account.Money)
 			break
 		}
 
@@ -86,10 +86,10 @@ func createCasinoAccount(mode WorkMode) (*casinoroyale.Account, error) {
 		}
 		break
 	case betterMtPlay:
-		//err := crackBetterMt(account)
-		//if err != nil {
-		//	return nil, err
-		//}
+		err := mt.RecoverStates(account)
+		if err != nil {
+			return nil, err
+		}
 		break
 	}
 

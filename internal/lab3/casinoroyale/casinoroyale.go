@@ -17,10 +17,10 @@ const baseUrl = "http://95.217.177.249/casino"
 
 // endpoints
 const (
-	createAcc = "createacc"
-	playLcg   = "playLcg"
-	playMt    = "playMt"
-	//playBetterMt = "playBetterMt"
+	createAcc    = "createacc"
+	playLcg      = "playLcg"
+	playMt       = "playMt"
+	playBetterMt = "playBetterMt"
 )
 
 type Account struct {
@@ -80,6 +80,12 @@ func (a *Account) SeedMtRandom(seedValue uint32) {
 	a.mtRandom.UInt32()
 }
 
+func (a *Account) SeedMtBetterRandom(states []uint32) {
+	a.isMtCracked = true
+	a.mtRandom = mt19937.New(0)
+	a.mtRandom.SetStates(states)
+}
+
 func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 	betNumber := int32(1)
 	if a.isLcgCracked {
@@ -109,13 +115,21 @@ func (a *Account) PlayLcg(betAmount int) (PlayResult, error) {
 }
 
 func (a *Account) PlayMt(betAmount int) (PlayResult, error) {
+	return a.playMersenneTwister(betAmount, playMt)
+}
+
+func (a *Account) PlayMtBetter(betAmount int) (PlayResult, error) {
+	return a.playMersenneTwister(betAmount, playBetterMt)
+}
+
+func (a *Account) playMersenneTwister(betAmount int, casinoEndFunc string) (PlayResult, error) {
 	betNumber := uint32(1)
 	if a.isMtCracked {
 		betNumber = a.mtRandom.UInt32()
 	}
 
 	body, err := requestToCasino(fmt.Sprintf("%s/%s?id=%s&bet=%d&number=%d",
-		baseUrl, playMt, a.Id, betAmount, betNumber))
+		baseUrl, casinoEndFunc, a.Id, betAmount, betNumber))
 	if err != nil {
 		return PlayResult{}, err
 	}
@@ -134,9 +148,6 @@ func (a *Account) PlayMt(betAmount int) (PlayResult, error) {
 
 	return result, nil
 }
-
-//func (a *Account) PlayBetterMt(betAmount int) (PlayResult, error) {
-//}
 
 func parsePlayResponse(body []byte) (PlayResult, error) {
 	var data map[string]interface{}
