@@ -59,10 +59,13 @@ func getWorkingMode() WorkMode {
 
 	switch os.Args[1] {
 	case "--lcg":
+		fmt.Println("-----------------Linear congruential generator-----------------")
 		return lcgPlay
 	case "--mt":
+		fmt.Println("---------------------Mersenne Twister 19937--------------------")
 		return mtPlay
-	case "--betterMt":
+	case "--mtb":
+		fmt.Println("--------------Mersenne Twister 19937 (Better seed)-------------")
 		return betterMtPlay
 	default:
 		panic("unknown working mode")

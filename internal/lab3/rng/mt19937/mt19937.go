@@ -5,23 +5,23 @@ import (
 )
 
 const (
-	n = 624
+	N = 624
 	m = 397
-	w = 32
+	W = 32
 	r = 31
-	u = 11
-	s = 7
-	t = 15
-	l = 18
+	U = 11
+	S = 7
+	T = 15
+	L = 18
 	f = 1812433253
-	a = uint32(0x9908B0DF)
-	b = uint32(0x9D2C5680)
-	c = uint32(0xEFC60000)
-	d = uint32(0xFFFFFFFF)
+	a = 0x9908B0DF
+	B = 0x9D2C5680
+	C = 0xEFC60000
+	D = 0xFFFFFFFF
 )
 
 var lowerMask = int(math.Pow(2, r) - 1)
-var upperMask = int(math.Pow(2, w-r)-1) << r
+var upperMask = int(math.Pow(2, W-r)-1) << r
 
 type Generator struct {
 	index  int
@@ -30,20 +30,20 @@ type Generator struct {
 
 func New(seed uint32) Generator {
 	g := Generator{}
-	g.index = n
-	g.states = make([]uint32, n)
+	g.index = N
+	g.states = make([]uint32, N)
 	g.states[0] = seed
 
-	for i := 1; i < n; i++ {
-		g.states[i] = uint32((f*(int(g.states[i-1])^(int(g.states[i-1])>>(w-2))) + i) & int(math.Pow(2, w)-1))
+	for i := 1; i < N; i++ {
+		g.states[i] = uint32((f*(int(g.states[i-1])^(int(g.states[i-1])>>(W-2))) + i) & int(math.Pow(2, W)-1))
 	}
 
 	return g
 }
 
 func (g *Generator) UInt32() uint32 {
-	if g.index >= n {
-		if g.index > n {
+	if g.index >= N {
+		if g.index > N {
 			panic("states index is out of range for mt19937")
 		}
 
@@ -55,26 +55,29 @@ func (g *Generator) UInt32() uint32 {
 	return res
 }
 
+func (g *Generator) SetStates(states []uint32) {
+	g.states = states
+}
+
 func (g *Generator) twist() {
-	for i := 0; i < n; i++ {
-		temp := uint32((int(g.states[i]) & upperMask) + (int(g.states[(i+1)%n]) & lowerMask))
+	for i := 0; i < N; i++ {
+		temp := uint32((int(g.states[i]) & upperMask) + (int(g.states[(i+1)%N]) & lowerMask))
 		tempSh := temp >> 1
 
 		if temp%2 != 0 {
 			tempSh ^= a
 		}
 
-		g.states[i] = g.states[(i+m)%n] ^ tempSh
+		g.states[i] = g.states[(i+m)%N] ^ tempSh
 	}
 
 	g.index = 0
 }
 
 func (g *Generator) temper(val uint32) uint32 {
-	y := val ^ ((val >> u) & d)
-	y = y ^ ((y << s) & b)
-	y = y ^ ((y << t) & c)
-	z := y ^ (y >> l)
-
-	return z
+	val ^= (val >> U) & D
+	val ^= (val << S) & B
+	val ^= (val << T) & C
+	val ^= val >> L
+	return val
 }

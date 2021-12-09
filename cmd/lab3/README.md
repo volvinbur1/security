@@ -9,4 +9,7 @@
 Кряк [`/internal/lab3/rng/crack/lcg/lcg.go`](https://github.com/volvinbur1/security/blob/main/internal/lab3/rng/crack/lcg/lcg.go)
 
 ## :heavy_check_mark: Mt19937 `(--mt)`
-Кряк [`/internal/lab3/rng/crack/mt/mt.go`](https://github.com/volvinbur1/security/blob/main/internal/lab3/rng/crack/mt/mt.go)
+Кряк [`/internal/lab3/rng/crack/mt/mt.go`](https://github.com/volvinbur1/security/blob/main/internal/lab3/rng/crack/mt/mt.go#L13)
+
+## :heavy_check_mark: Mt19937 Better seeding `(--mtb)`
+Кряк [`/internal/lab3/rng/crack/mt/mt.go`](https://github.com/volvinbur1/security/blob/main/internal/lab3/rng/crack/mt/mt.go#L38)
