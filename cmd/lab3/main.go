@@ -1,13 +1,11 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/volvinbur1/security/internal/lab3/casinoroyale"
 	"github.com/volvinbur1/security/internal/lab3/rng/crack/lcg"
 	"github.com/volvinbur1/security/internal/lab3/rng/crack/mt"
 	"os"
-	"time"
 )
 
 type WorkMode int
@@ -82,7 +80,7 @@ func createCasinoAccount(mode WorkMode) (*casinoroyale.Account, error) {
 		}
 		break
 	case mtPlay:
-		err := crackMt(account)
+		err := mt.RecoverSeed(account)
 		if err != nil {
 			return nil, err
 		}
@@ -117,23 +115,3 @@ func crackLcg(account *casinoroyale.Account) error {
 	account.SetLcgParameters(lcgParams)
 	return nil
 }
-
-func crackMt(account *casinoroyale.Account) error {
-	startTime := time.Now()
-	result, err := account.PlayMt(1)
-	if err != nil {
-		return err
-	}
-
-	seedValue := mt.CrackRng(uint32(result.RealNumber), startTime)
-	if seedValue == 0 {
-		return errors.New("seed value not found for mt19937 algorithm")
-	}
-
-	account.SeedMtRandom(seedValue)
-	return nil
-}
-
-//func crackBetterMt(account *casinoroyale.Account) error {
-//	return nil
-//}
