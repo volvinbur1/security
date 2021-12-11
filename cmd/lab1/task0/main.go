@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/base64"
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -19,10 +20,12 @@ func main() {
 
 	decodedStr, _ := base64.StdEncoding.DecodeString(encodedStr)
 
-	err = os.WriteFile("lab1_tasks.txt", decodedStr, 0666)
-	if err != nil {
-		panic(err)
-	}
+	//err = os.WriteFile("lab1_tasks.txt", decodedStr, 0666)
+	//if err != nil {
+	//	panic(err)
+	//}
+	fmt.Println(string(decodedStr))
+
 }
 
 func convertBytesToChars(input []byte) (string, error) {
