@@ -1,8 +1,10 @@
 package decrypt
 
-func BruteForce(cipher []byte, possibleKeyValues string) []byte {
+func BruteForce(cipher []byte) ([]byte, string) {
+	keyValues := possibleKeyValues()
+
 	possibleDecryption := make(map[byte][]byte)
-	for _, keyChar := range possibleKeyValues {
+	for _, keyChar := range keyValues {
 		decryption := xor(cipher, byte(keyChar))
 		possibleDecryption[byte(keyChar)] = decryption
 	}
@@ -17,5 +19,5 @@ func BruteForce(cipher []byte, possibleKeyValues string) []byte {
 		}
 	}
 
-	return possibleDecryption[maxScoredKey]
+	return possibleDecryption[maxScoredKey], string(maxScoredKey)
 }
