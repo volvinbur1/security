@@ -19,7 +19,7 @@ func main() {
 
 	decodedStr, _ := base64.StdEncoding.DecodeString(encodedStr)
 
-	err = os.WriteFile("lab1Task.txt", decodedStr, 0666)
+	err = os.WriteFile("lab1_tasks.txt", decodedStr, 0666)
 	if err != nil {
 		panic(err)
 	}
