@@ -38,7 +38,7 @@ func FrequencyAnalyzer(input []byte) []int {
 	return frequency
 }
 
-func RepeatingKeyXorCipher(input []byte, keyLength int) []byte {
+func RepeatingKeyXorCipher(input []byte, keyLength int) ([]byte, string) {
 	subString := make([][]byte, keyLength)
 	for i := 0; i < (len(input)/2)+1; i += keyLength {
 		for j := 0; j < len(subString); j++ {
@@ -56,7 +56,7 @@ func RepeatingKeyXorCipher(input []byte, keyLength int) []byte {
 		key += subKey
 	}
 
-	return xor(input, []byte(key))
+	return xor(input, []byte(key)), key
 }
 
 func xor(input, key []byte) []byte {

@@ -26,7 +26,8 @@ func main() {
 	//fmt.Println(frequencies)
 
 	startTime := time.Now()
-	plaintext := decrypt.RepeatingKeyXorCipher(cipher, keyLength)
+	plaintext, key := decrypt.RepeatingKeyXorCipher(cipher, keyLength)
 	fmt.Println("Execution time:", time.Since(startTime).String())
 	fmt.Println(string(plaintext))
+	fmt.Println("Key:", key)
 }
