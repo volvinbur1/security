@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	sourceCodes, err := os.ReadFile("./lab1_cipher.txt")
+	sourceCodes, err := os.ReadFile("./cipher.txt")
 	if err != nil {
 		panic(err)
 	}

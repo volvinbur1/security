@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	cipherHex, err := os.ReadFile("./lab1_task1.txt")
+	cipherHex, err := os.ReadFile("./task1.txt")
 	if err != nil {
 		panic(err)
 	}

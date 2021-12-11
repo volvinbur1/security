@@ -11,7 +11,7 @@ import (
 const keyLength = 3 // by frequency counting
 
 func main() {
-	cipherEncoded, err := os.ReadFile("./lab1_task2.txt")
+	cipherEncoded, err := os.ReadFile("./task2.txt")
 	if err != nil {
 		panic(err)
 	}
