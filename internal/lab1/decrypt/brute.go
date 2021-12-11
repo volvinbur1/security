@@ -5,7 +5,7 @@ func BruteForce(cipher []byte) ([]byte, string) {
 
 	possibleDecryption := make(map[byte][]byte)
 	for _, keyChar := range keyValues {
-		decryption := xor(cipher, byte(keyChar))
+		decryption := xor(cipher, []byte{byte(keyChar)})
 		possibleDecryption[byte(keyChar)] = decryption
 	}
 
