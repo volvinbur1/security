@@ -94,8 +94,8 @@ func (a Algorithm) crossover(firstParent, secondParent Chromosome, newPopulation
 	firstChild := createEmptyChromosome()
 	secondChild := createEmptyChromosome()
 	for i := start; i < end; i++ {
-		firstChild.genes[i] = firstParent.genes[i]
-		secondChild.genes[i] = secondParent.genes[i]
+		firstChild.genes[i] = secondParent.genes[i]
+		secondChild.genes[i] = firstParent.genes[i]
 	}
 
 	for i := 0; i < genesCnt; i++ {
