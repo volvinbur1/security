@@ -86,7 +86,7 @@ func (a *Algorithm) newGeneration() {
 }
 
 func (a Algorithm) crossover(firstParent, secondParent Chromosome, newPopulation []Chromosome) []Chromosome {
-	genesCnt := int(byte('Z') - byte('A'))
+	genesCnt := int(byte('Z') - byte('A') + 1)
 	end := rand.Intn(genesCnt) + 1
 	start := rand.Intn(end)
 
@@ -162,7 +162,7 @@ func indexOf(arr []byte, value byte) int {
 
 func createEmptyChromosome() Chromosome {
 	chromosome := Chromosome{
-		genes: make([]byte, byte('Z')-byte('A')),
+		genes: make([]byte, byte('Z')-byte('A')+1),
 	}
 
 	for i := 0; i < len(chromosome.genes); i++ {
