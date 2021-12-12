@@ -72,9 +72,10 @@ func (a Algorithm) fitness(cipher []byte, chromosome Chromosome) float64 {
 }
 
 func (a *Algorithm) newGeneration() {
-	newPopulation := a.population[:len(a.population)/5]
-	rand.Seed(time.Now().UnixNano())
+	newPopulation := make([]Chromosome, 0)
+	newPopulation = append(newPopulation, a.population[:len(a.population)/5]...)
 
+	//rand.Seed(time.Now().UnixNano())
 	for i := len(a.population) / 5; i < len(a.population); i += 2 {
 		firstParent := a.selectChromosome()
 		secondParent := a.selectChromosome()
@@ -106,13 +107,13 @@ func (a Algorithm) crossover(firstParent, secondParent Chromosome, newPopulation
 		}
 
 		idx := i
-		if contains(firstChild.genes, firstParent.genes[idx]) {
+		for contains(firstChild.genes, firstParent.genes[idx]) {
 			idx = indexOf(firstChild.genes, firstParent.genes[idx])
 		}
 		firstChild.genes[i] = firstParent.genes[idx]
 
 		idx = i
-		if contains(secondChild.genes, secondParent.genes[idx]) {
+		for contains(secondChild.genes, secondParent.genes[idx]) {
 			idx = indexOf(secondChild.genes, secondParent.genes[idx])
 		}
 		secondChild.genes[i] = secondParent.genes[idx]
@@ -185,7 +186,9 @@ func generatePopulation(populationSize int) []Chromosome {
 			possibleValues[i], possibleValues[j] = possibleValues[j], possibleValues[i]
 		})
 
-		population = append(population, Chromosome{genes: possibleValues})
+		newChromosome := Chromosome{genes: make([]byte, len(possibleValues))}
+		copy(newChromosome.genes, possibleValues)
+		population = append(population, newChromosome)
 	}
 
 	return population

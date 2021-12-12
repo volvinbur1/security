@@ -22,7 +22,7 @@ func ngrams(str []byte, n int) map[string]float64 {
 	}
 
 	for key, val := range ngramsMap {
-		ngramsMap[key] = val / float64(len(str)-n)
+		ngramsMap[key] = val / float64(len(str)-n+1)
 	}
 
 	return ngramsMap
