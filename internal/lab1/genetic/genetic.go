@@ -107,13 +107,13 @@ func (a Algorithm) crossover(firstParent, secondParent Chromosome, newPopulation
 		}
 
 		idx := i
-		for contains(firstChild.genes, firstParent.genes[idx]) {
+		if contains(firstChild.genes, firstParent.genes[idx]) {
 			idx = indexOf(firstChild.genes, firstParent.genes[idx])
 		}
 		firstChild.genes[i] = firstParent.genes[idx]
 
 		idx = i
-		for contains(secondChild.genes, secondParent.genes[idx]) {
+		if contains(secondChild.genes, secondParent.genes[idx]) {
 			idx = indexOf(secondChild.genes, secondParent.genes[idx])
 		}
 		secondChild.genes[i] = secondParent.genes[idx]
