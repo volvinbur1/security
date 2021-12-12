@@ -1,6 +1,7 @@
 package genetic
 
 import (
+	"fmt"
 	"github.com/volvinbur1/security/internal/lab1/decrypt"
 	"math/rand"
 	"sort"
@@ -38,6 +39,12 @@ func New(popSize, genCnt int, trigramsPath string) *Algorithm {
 func (a *Algorithm) Decrypt(cipher []byte) (string, string) {
 	a.evaluate(cipher)
 
+	for i := 0; i < a.generationCount; i++ {
+		a.newGeneration()
+		a.evaluate(cipher)
+		fmt.Printf("%d -> %s\t%f\n", i, a.population[0].genes, a.population[0].fitness)
+	}
+
 	return "", ""
 }
 
@@ -51,7 +58,7 @@ func (a *Algorithm) evaluate(cipher []byte) {
 	})
 }
 
-func (a *Algorithm) fitness(cipher []byte, chromosome Chromosome) float64 {
+func (a Algorithm) fitness(cipher []byte, chromosome Chromosome) float64 {
 	decryption := decrypt.Substitution(cipher, chromosome.genes)
 	decryptionTrigrams := ngrams(decryption, ngramsCnt)
 
@@ -62,6 +69,107 @@ func (a *Algorithm) fitness(cipher []byte, chromosome Chromosome) float64 {
 	}
 
 	return fitnessValue
+}
+
+func (a *Algorithm) newGeneration() {
+	newPopulation := a.population[:len(a.population)/5]
+	rand.Seed(time.Now().UnixNano())
+
+	for i := len(a.population) / 5; i < len(a.population); i += 2 {
+		firstParent := a.selectChromosome()
+		secondParent := a.selectChromosome()
+
+		newPopulation = a.crossover(firstParent, secondParent, newPopulation)
+	}
+
+	a.population = newPopulation
+}
+
+func (a Algorithm) crossover(firstParent, secondParent Chromosome, newPopulation []Chromosome) []Chromosome {
+	genesCnt := int(byte('Z') - byte('A'))
+	end := rand.Intn(genesCnt) + 1
+	start := rand.Intn(end)
+
+	firstChild := createEmptyChromosome()
+	secondChild := createEmptyChromosome()
+	for i := start; i < end; i++ {
+		firstChild.genes[i] = firstParent.genes[i]
+		secondChild.genes[i] = secondParent.genes[i]
+	}
+
+	for i := 0; i < genesCnt; i++ {
+		if i == start {
+			i += end - start
+			if i == genesCnt {
+				continue
+			}
+		}
+
+		idx := i
+		if contains(firstChild.genes, firstParent.genes[idx]) {
+			idx = indexOf(firstChild.genes, firstParent.genes[idx])
+		}
+		firstChild.genes[i] = firstParent.genes[idx]
+
+		idx = i
+		if contains(secondChild.genes, secondParent.genes[idx]) {
+			idx = indexOf(secondChild.genes, secondParent.genes[idx])
+		}
+		secondChild.genes[i] = secondParent.genes[idx]
+	}
+
+	return append(newPopulation, firstChild, secondChild)
+}
+
+func (a Algorithm) selectChromosome() Chromosome {
+	total := 0.0
+	for _, chromosome := range a.population {
+		total += chromosome.fitness
+	}
+
+	limitation := rand.Float64() * total
+
+	total = 0.0
+	for _, chromosome := range a.population {
+		total += chromosome.fitness
+		if total >= limitation {
+			return chromosome
+		}
+	}
+
+	return a.population[0]
+}
+
+func contains(arr []byte, value byte) bool {
+	for i := 0; i < len(arr); i++ {
+		if value == arr[i] {
+			return true
+		}
+	}
+
+	return false
+}
+
+func indexOf(arr []byte, value byte) int {
+	for i := 0; i < len(arr); i++ {
+		if value == arr[i] {
+			return i
+		}
+	}
+
+	return -1
+}
+
+func createEmptyChromosome() Chromosome {
+	chromosome := Chromosome{
+		genes: make([]byte, byte('Z')-byte('A')),
+	}
+
+	for i := 0; i < len(chromosome.genes); i++ {
+		chromosome.genes[i] = '-'
+	}
+
+	return chromosome
 }
 
 func generatePopulation(populationSize int) []Chromosome {
