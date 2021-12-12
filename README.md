@@ -6,6 +6,6 @@
 3. :heavy_check_mark: [Casino Royale](https://github.com/volvinbur1/security/tree/main/cmd/lab3)
 4. coming soon
 5. :heavy_check_mark: [Secure-Web-App. Password storage. Hashing](https://github.com/volvinbur1/security-web-app)
-6. :heavy_check_mark: [Secure-Web-App. Sensitive information storage](https://github.com/volvinbur1/security-web-app)
-7. :heavy_check_mark: [Secure-Web-App. TLS configuration](https://github.com/volvinbur1/security-web-app)
+6. :heavy_check_mark: [Secure-Web-App. Sensitive information storage](https://github.com/volvinbur1/security-web-app/tree/lab_6)
+7. :heavy_check_mark: [Secure-Web-App. TLS configuration](https://github.com/volvinbur1/security-web-app/tree/lab7)
 8. coming soon
