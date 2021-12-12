@@ -36,7 +36,7 @@ func New(popSize, genCnt int, trigramsPath string) *Algorithm {
 	return a
 }
 
-func (a *Algorithm) Decrypt(cipher []byte) (string, string) {
+func (a *Algorithm) Decrypt(cipher []byte) ([]byte, string) {
 	a.evaluate(cipher)
 
 	for i := 0; i < a.generationCount; i++ {
@@ -45,7 +45,7 @@ func (a *Algorithm) Decrypt(cipher []byte) (string, string) {
 		fmt.Printf("%d -> %s\t%f\n", i, a.population[0].genes, a.population[0].fitness)
 	}
 
-	return "", ""
+	return decrypt.Substitution(cipher, a.population[0].genes), string(a.population[0].genes)
 }
 
 func (a *Algorithm) evaluate(cipher []byte) {
