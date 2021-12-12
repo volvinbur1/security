@@ -17,7 +17,35 @@ const (
 )
 
 func main() {
-	workMode := getWorkingMode()
+	fmt.Println("-----------------Linear congruential generator-----------------")
+	playCasino(lcgPlay)
+	fmt.Println("---------------------Mersenne Twister 19937--------------------")
+	playCasino(mtPlay)
+	fmt.Println("--------------Mersenne Twister 19937 (Better seed)-------------")
+	playCasino(betterMtPlay)
+}
+
+func getWorkingMode() WorkMode {
+	if len(os.Args) < 2 {
+		panic("work mode not specified")
+	}
+
+	switch os.Args[1] {
+	case "--lcg":
+		fmt.Println("-----------------Linear congruential generator-----------------")
+		return lcgPlay
+	case "--mt":
+		fmt.Println("---------------------Mersenne Twister 19937--------------------")
+		return mtPlay
+	case "--mtb":
+		fmt.Println("--------------Mersenne Twister 19937 (Better seed)-------------")
+		return betterMtPlay
+	default:
+		panic("unknown working mode")
+	}
+}
+
+func playCasino(workMode WorkMode) {
 	account, err := createCasinoAccount(workMode)
 	if err != nil {
 		panic(err)
@@ -49,26 +77,6 @@ func main() {
 
 	if account.Money >= 1000000 {
 		fmt.Println("Yuhu, Victory.")
-	}
-}
-
-func getWorkingMode() WorkMode {
-	if len(os.Args) < 2 {
-		panic("work mode not specified")
-	}
-
-	switch os.Args[1] {
-	case "--lcg":
-		fmt.Println("-----------------Linear congruential generator-----------------")
-		return lcgPlay
-	case "--mt":
-		fmt.Println("---------------------Mersenne Twister 19937--------------------")
-		return mtPlay
-	case "--mtb":
-		fmt.Println("--------------Mersenne Twister 19937 (Better seed)-------------")
-		return betterMtPlay
-	default:
-		panic("unknown working mode")
 	}
 }
 
